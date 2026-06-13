@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ALONE MINI - Pair</title>
+    <style>
+        body { font-family: monospace; background: #0a0a0a; color: #0ff; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .container { text-align: center; padding: 30px; border: 1px solid #0ff; border-radius: 10px; background: #000; }
+        input { padding: 12px; margin: 10px; border: 1px solid #0ff; background: #000; color: #0ff; font-size: 16px; }
+        button { padding: 12px 24px; background: #0ff; color: #000; border: none; cursor: pointer; font-weight: bold; }
+        #code { margin-top: 20px; font-size: 24px; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔐 ALONE MINI BOT</h1>
+        <h3>Enter Phone Number</h3>
+        <input type="text" id="number" placeholder="+947XXXXXXXX">
+        <br>
+        <button onclick="pair()">📱 PAIR DEVICE</button>
+        <div id="code"></div>
+    </div>
+    <script>
+        async function pair() {
+            const num = document.getElementById('number').value;
+            if (!num) return alert('Enter number!');
+            document.getElementById('code').innerHTML = '⏳ Getting code...';
+            try {
+                const res = await fetch(`/code?number=${encodeURIComponent(num)}`);
+                const data = await res.json();
+                if (data.code) {
+                    document.getElementById('code').innerHTML = `🔑 CODE: ${data.code}`;
+                } else {
+                    document.getElementById('code').innerHTML = '❌ Failed!';
+                }
+            } catch(e) {
+                document.getElementById('code').innerHTML = '❌ Error!';
+            }
+        }
+    </script>
+</body>
+</html>
