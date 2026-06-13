@@ -1,29 +1,37 @@
 const express = require('express');
+const path = require('path');
+const fs = require('fs-extra');
+
 const app = express();
-__path = process.cwd()
-const bodyParser = require("body-parser");
-const PORT = process.env.PORT || 8002;
-let code = require('./pair'); 
+const PORT = process.env.PORT || 3000;
 
-require('events').EventEmitter.defaultMaxListeners = 500;
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-app.use('/code', code);
-app.use('/pair', async (req, res, next) => {
-    res.sendFile(__path + '/pair.html')
+const pairRouter = require('./pair');
+
+app.use('/code', pairRouter);
+app.get('/pair', (req, res) => {
+    res.sendFile(path.join(__dirname, 'pair.html'));
 });
-app.use('/', async (req, res, next) => {
-    res.sendFile(__path + '/main.html')
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'main.html'));
 });
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.get('/health', (req, res) => {
+    res.status(200).json({ status: 'ok', timestamp: new Date().toISOString() });
+});
 
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
     console.log(`
-Don't Forget To Give Star ‼️
-
-
-Server running on http://localhost:` + PORT)
+╔════════════════════════════════════╗
+║   🤖 ALONE MINI BOT DEPLOYED 🤖    ║
+╠════════════════════════════════════╣
+║   PORT: ${PORT}                       ║
+║   STATUS: RUNNING ✅                 ║
+║   TIME: ${new Date().toLocaleString()}   ║
+╚════════════════════════════════════╝
+    `);
 });
 
 module.exports = app;
